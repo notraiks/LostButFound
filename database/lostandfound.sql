@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2024 at 09:07 AM
+-- Generation Time: Nov 06, 2024 at 03:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -71,21 +71,24 @@ INSERT INTO `item` (`Item_ID`, `Item_Image`, `Date`, `Description`, `Location`) 
 
 CREATE TABLE `users` (
   `USC_ID` int(11) NOT NULL,
-  `Fname` varchar(100) NOT NULL,
+  `FName` varchar(100) NOT NULL,
+  `LName` varchar(100) NOT NULL,
+  `Age` int(11) NOT NULL,
   `Password` varchar(100) NOT NULL,
   `Role` enum('admin','staff','user') NOT NULL,
-  `Email` varchar(50) NOT NULL,
-  `LName` varchar(100) NOT NULL
+  `Email` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`USC_ID`, `Fname`, `Password`, `Role`, `Email`, `LName`) VALUES
-(101, 'Staff Profile', 'staff', 'staff', '', ''),
-(202, 'user profile', 'user', 'user', '', ''),
-(21101042, 'Edouard Ybanez', 'password', 'admin', '', '');
+INSERT INTO `users` (`USC_ID`, `FName`, `LName`, `Age`, `Password`, `Role`, `Email`) VALUES
+(101, 'Staff Profile', '', 0, 'staff', 'staff', ''),
+(202, 'user profile', '', 0, 'user', 'user', ''),
+(21101042, 'Edouard Ybanez', '', 0, 'password', 'admin', ''),
+(21101043, 'java', 'test', 18, 'pass', 'staff', 'email'),
+(21101044, 'another', 'javatest', 22, 'password', 'admin', 'email');
 
 --
 -- Indexes for dumped tables
@@ -126,6 +129,12 @@ ALTER TABLE `claims_request`
 --
 ALTER TABLE `item`
   MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `USC_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21101045;
 
 --
 -- Constraints for dumped tables
