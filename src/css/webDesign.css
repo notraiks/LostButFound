@@ -109,3 +109,9 @@ footer {
     font-size: 28px;
     cursor: pointer;
 }
+
+nav img {
+    width: 100px; /* Set the width you want */
+    height: auto; /* Maintain aspect ratio */
+    /* Alternatively, you can set a fixed height, but using width with auto height is often better */
+}
