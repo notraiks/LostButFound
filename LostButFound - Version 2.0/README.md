@@ -3,7 +3,8 @@ A collaborative project of my Web Development 2 subject. Partnered with Tibon, I
 
 #
 
-##Steps in setting up the Vite + React Project Application
+## Steps in setting up the Vite + React Project Application
+
 #Step 1:
 - Go to Dedicate a folder and locate it in your terminal (Windows: Command Prompt)
 #Step 2 (Windows Command Prompt):
