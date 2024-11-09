@@ -1,0 +1,16 @@
+
+footer {
+    width: 100%;
+    padding: 1rem;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-filter-bar {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  
