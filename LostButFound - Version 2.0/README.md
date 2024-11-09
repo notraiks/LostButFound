@@ -12,6 +12,7 @@ A collaborative project of my Web Development 2 subject. Partnered with Tibon, I
 
 ## Step 3:
 - Input: npm install react-router-dom
+- Input: npm install react-icons --save
 
 ## Step 4:
 - Input: npm install
