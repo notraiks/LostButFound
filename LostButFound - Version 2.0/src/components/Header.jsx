@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import logo from "../assets/M.png";
+import logo from "../assets/img/web-logo.png";
 import profileImage from "../assets/M.png";
 import "./Header.css";
 
