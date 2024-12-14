@@ -13,11 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../controllers/AuthController.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
-$username = $data['username'] ?? '';
+$firstName = $data['firstName'] ?? '';
+$lastName = $data['lastName'] ?? '';
 $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
 $phoneNumber = $data['phoneNumber'] ?? '';
 
 $authController = new AuthController();
-$authController->register($username, $email, $password, $phoneNumber);
+$authController->register($firstName, $lastName, $email, $password, $phoneNumber);
 ?>

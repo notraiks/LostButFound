@@ -6,7 +6,8 @@ import './Login.css';
 
 const CreateAccount = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -32,7 +33,8 @@ const CreateAccount = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formData.username,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
           phoneNumber: formData.phoneNumber,
@@ -56,7 +58,8 @@ const CreateAccount = () => {
   };
 
   const fields = [
-    { label: 'Username', type: 'text', name: 'username', value: formData.username, onChange: handleInputChange, placeholder: 'Enter your username', required: true },
+    { label: 'First Name', type: 'text', name: 'firstName', value: formData.firstName, onChange: handleInputChange, placeholder: 'Enter your first name', required: true },
+    { label: 'Last Name', type: 'text', name: 'lastName', value: formData.lastName, onChange: handleInputChange, placeholder: 'Enter your last name', required: true },
     { label: 'Email', type: 'email', name: 'email', value: formData.email, onChange: handleInputChange, placeholder: 'Enter your email', required: true },
     { label: 'Phone Number', type: 'text', name: 'phoneNumber', value: formData.phoneNumber, onChange: handleInputChange, placeholder: 'Enter your phone number', required: true },
     { label: 'Password', type: 'password', name: 'password', value: formData.password, onChange: handleInputChange, placeholder: 'Enter your password', required: true },
@@ -69,15 +72,7 @@ const CreateAccount = () => {
         <h1>Create Account</h1>
         <p>Join our community and help reunite lost items with their rightful owners.</p>
       </div>
-      <LoginForm
-        title="Lost, But Found"
-        subtitle="Helping you reconnect with your belongings"
-        fields={fields}
-        buttonText="Register"
-        onSubmit={handleCreateAccount}
-        error={error}
-        backAction={handleBack}  // Pass the backAction prop
-      />
+      <LoginForm title="Lost, But Found" subtitle="Helping you reconnect with your belongings" fields={fields} buttonText="Register" onSubmit={handleCreateAccount} error={error} backAction={handleBack} />
     </div>
   );
 };

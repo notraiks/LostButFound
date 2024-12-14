@@ -8,7 +8,7 @@ class ItemController {
 
         $stmt = $conn->prepare("
             SELECT fi.item_id, fi.title, fi.description, fi.date_found, fi.time_found, fi.location_found, fi.category, fi.status, 
-                   fi.item_img, u.username, u.email 
+                   fi.item_img, u.first_name, u.last_name, u.email, u.phone_number, u.yr_course
             FROM found_item AS fi
             LEFT JOIN users AS u ON fi.user_id = u.user_id
             WHERE fi.item_id = ?
@@ -43,7 +43,7 @@ class ItemController {
 
         $sql = "
             SELECT fi.item_id, fi.title, fi.description, fi.date_found, fi.time_found, fi.location_found, fi.category, fi.status, 
-                   fi.item_img, u.username, u.email 
+                   fi.item_img, u.first_name, u.last_name, u.email
             FROM found_item AS fi
             LEFT JOIN users AS u ON fi.user_id = u.user_id
             ORDER BY fi.date_found DESC
@@ -58,26 +58,21 @@ class ItemController {
         }
 
         $items = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $items[] = new Item(
-                    $row['item_id'],
-                    $row['title'],
-                    $row['description'],
-                    $row['date_found'],
-                    $row['time_found'],
-                    $row['location_found'],
-                    $row['category'],
-                    $row['status'],
-                    $row['item_img'],
-                    $row['username'],
-                    $row['email']
-                );
-            }
-        } else {
-            http_response_code(404);
-            echo json_encode(["message" => "No items found"]);
-            return;
+        while ($row = $result->fetch_assoc()) {
+            $items[] = new Item(
+                $row['item_id'],
+                $row['title'],
+                $row['description'],
+                $row['date_found'],
+                $row['time_found'],
+                $row['location_found'],
+                $row['category'],
+                $row['status'],
+                $row['item_img'],
+                $row['first_name'],
+                $row['last_name'],
+                $row['email']
+            );
         }
 
         echo json_encode($items);

@@ -11,7 +11,10 @@ const ItemDetailPage = () => {
   const [item, setItem] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost/LostButFound/php/routes/fetch.php?id=${id}`)
+    fetch(`http://localhost/LostButFound/php/routes/fetch.php?id=${id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -41,11 +44,11 @@ const ItemDetailPage = () => {
               </div>
               <div className="item-detail">
                 <div className="item-image">
-                <img
+                  <img
                     src={`http://localhost/LostButFound/${item.item_img}`}
                     alt={item.title}
                     onError={(e) => { e.target.src = "https://via.placeholder.com/150"; }}
-                />
+                  />
                 </div>
                 <div className="item-info">
                   <h3>Item Details</h3>
@@ -81,11 +84,11 @@ const ItemDetailPage = () => {
                   <div className="form-row">
                     <div className="form-group">
                       <label>Turned over by</label>
-                      <input type="text" value={item.username} readOnly />
+                      <input type="text" value={`${item.first_name} ${item.last_name}`} readOnly />
                     </div>
                     <div className="form-group">
                       <label>Year and Course</label>
-                      <input type="text" value="BSID 3" readOnly />
+                      <input type="text" value={item.yr_course || "N/A"} readOnly />
                     </div>
                     <div className="form-group">
                       <label>Email Address</label>
@@ -93,7 +96,7 @@ const ItemDetailPage = () => {
                     </div>
                     <div className="form-group">
                       <label>Phone Number</label>
-                      <input type="text" value="09847548652" readOnly />
+                      <input type="text" value={item.phone_number || "N/A"} readOnly />
                     </div>
                   </div>
                 </div>

@@ -20,10 +20,11 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('username');
+    localStorage.removeItem('first_name');
+    localStorage.removeItem('last_name');
     localStorage.removeItem('role');
     setIsLoggedIn(false);
-    navigate('/'); 
+    navigate('/');
   };
 
   return (

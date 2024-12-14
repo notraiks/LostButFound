@@ -1,63 +1,108 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../AuthContext";
 import { FaChevronDown } from "react-icons/fa";
 import logo from "../../assets/img/web-logo.png";
-import profileImage from "../../assets/M.png";
+import UserProfile from "./UserProfile"; // Import the UserProfile component
 import "./Header.css";
 
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [fullName, setFullName] = useState("User");
   const dropdownRef = useRef(null);
-  const { handleLogout } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch user data if not already in localStorage
+    const firstName = localStorage.getItem("first_name");
+    const lastName = localStorage.getItem("last_name");
+
+    if (firstName && lastName) {
+      setFullName(`${firstName} ${lastName}`);
+    } else {
+      fetch("http://localhost/LostButFound/php/routes/getUser.php", {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            localStorage.setItem("first_name", data.user.first_name);
+            localStorage.setItem("last_name", data.user.last_name);
+            setFullName(`${data.user.first_name} ${data.user.last_name}`);
+          }
+        })
+        .catch((error) => console.error("Error fetching user data:", error));
+    }
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
 
   const logout = () => {
-    handleLogout();
-    navigate("/"); 
+    // Clear session data and redirect to login
+    fetch("http://localhost/LostButFound/php/routes/logout.php", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        localStorage.clear();
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-    };
+  const openProfileModal = (e) => {
+    e.preventDefault();
+    setShowProfileModal(true);
+    setDropdownOpen(false);
+  };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const closeProfileModal = () => {
+    setShowProfileModal(false);
+  };
 
   return (
-    <header className="header">
-      <div className="header-left">
-        <img src={logo} alt="Logo" className="header-logo" />
-        <span className="header-app-name">LostButFound</span>
-      </div>
+    <>
+      <header className="header">
+        <div className="header-left">
+          <img src={logo} alt="Logo" className="header-logo" />
+          <span className="header-app-name">LostButFound</span>
+        </div>
 
-      <div className="header-profile" onClick={toggleDropdown} ref={dropdownRef}>
-        <img src={profileImage} alt="Profile" className="profile-image" />
-        <span className="username">{localStorage.getItem("username")}</span>
-        <FaChevronDown className={`dropdown-icon ${dropdownOpen ? 'open' : ''}`} />
+        <div className="header-profile" onClick={toggleDropdown} ref={dropdownRef}>
+          <span className="username">{fullName}</span>
+          <FaChevronDown className={`dropdown-icon ${dropdownOpen ? "open" : ""}`} />
 
-        {dropdownOpen && (
-          <div className="dropdown-menu">
-            <a href="/profile" className="dropdown-item">My Profile</a>
-            <a href="/manage-account" className="dropdown-item">Manage Account</a>
-            <a href="/change-password" className="dropdown-item">Change Password</a>
-            <a href="/" className="dropdown-item logout-button" onClick={(e) => { e.preventDefault(); logout(); }}>
-              Log Out
-            </a>
-          </div>
-        )}
-      </div>
-    </header>
+          {dropdownOpen && (
+            <div className="dropdown-menu">
+              <a href="/" className="dropdown-item" onClick={openProfileModal}>
+                My Profile
+              </a>
+              <a href="/change-password" className="dropdown-item">
+                Change Password
+              </a>
+              <a
+                href="/"
+                className="dropdown-item logout-button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  logout();
+                }}
+              >
+                Log Out
+              </a>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {showProfileModal && <UserProfile onClose={closeProfileModal} />}
+    </>
   );
 };
 

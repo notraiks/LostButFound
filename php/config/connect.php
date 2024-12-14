@@ -1,14 +1,16 @@
 <?php
-header("Content-Type: application/json");
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "lostbutfound";
 
-$servername = "localhost"; 
-$username = "root";       
-$password = "";        
-$dbname = "lostbutfound"; 
-
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// CORS headers
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
 ?>
