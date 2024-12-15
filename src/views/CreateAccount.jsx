@@ -14,6 +14,7 @@ const CreateAccount = () => {
     phoneNumber: '',
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -23,6 +24,9 @@ const CreateAccount = () => {
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -32,6 +36,7 @@ const CreateAccount = () => {
       const response = await fetch('http://localhost/LostButFound/php/routes/register.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -43,8 +48,9 @@ const CreateAccount = () => {
 
       const data = await response.json();
 
-      if (data.success) {
-        navigate('/');
+      if (response.ok) {
+        setSuccess('Registration successful! Redirecting to login...');
+        setTimeout(() => navigate('/'), 3000);
       } else {
         setError(data.error || 'Registration failed. Please try again.');
       }
@@ -72,7 +78,16 @@ const CreateAccount = () => {
         <h1>Create Account</h1>
         <p>Join our community and help reunite lost items with their rightful owners.</p>
       </div>
-      <LoginForm title="Lost, But Found" subtitle="Helping you reconnect with your belongings" fields={fields} buttonText="Register" onSubmit={handleCreateAccount} error={error} backAction={handleBack} />
+      <LoginForm
+        title="Lost, But Found"
+        subtitle="Helping you reconnect with your belongings"
+        fields={fields}
+        buttonText="Register"
+        onSubmit={handleCreateAccount}
+        error={error}
+        success={success}
+        backAction={handleBack}
+      />
     </div>
   );
 };

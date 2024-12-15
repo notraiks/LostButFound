@@ -1,0 +1,24 @@
+.pending-container {
+    padding: 20px;
+  }
+  
+  .pending-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .pending-container ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .pending-container li {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .pending-container li:hover {
+    background-color: #f0f0f0;
+  }

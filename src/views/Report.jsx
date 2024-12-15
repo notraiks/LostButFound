@@ -16,10 +16,6 @@ function Report() {
     dateFound: '',
     timeFound: '',
     description: '',
-    username: '',
-    yearCourse: '',
-    email: '',
-    phone: '',
     image: null,
   });
 
@@ -30,13 +26,44 @@ function Report() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, image: URL.createObjectURL(file) });
+      setFormData({ ...formData, image: file });
     }
   };
 
   const handleRemoveImage = () => {
     setFormData({ ...formData, image: null });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    for (const key in formData) {
+      form.append(key, formData[key]);
+    }
+  
+    try {
+      const response = await fetch('http://localhost/LostButFound/php/routes/report.php', {
+        method: 'POST',
+        credentials: 'include',
+        body: form,
+      });
+  
+      if (response.ok) {
+        alert('The item has been successfully reported! Thank you for your contribution.');
+        navigate('/home');
+      } else {
+        const result = await response.json();
+        alert(result.error || 'Failed to report the item. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error reporting item:', error);
+      alert('An error occurred while reporting the item. Please try again later.');
+    }
+  };
+  
+  
+  
+  
 
   return (
     <div>
@@ -49,98 +76,100 @@ function Report() {
               <h2>Report Item Form</h2>
             </div>
             <div className="item-detail">
-            <div className="insert-image">
-              {formData.image ? (
-                <>
-                  <img src={formData.image} alt="Uploaded preview" />
-                  <div className="remove-image-icon" onClick={handleRemoveImage}>
-                    <FaTimes />
-                  </div>
-                </>
-              ) : (
-                <label className="upload-placeholder">
-                  <span>+</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="file-input"
-                  />
-                </label>
-              )}
-            </div>
+              <div className="insert-image">
+                {formData.image ? (
+                  <>
+                    <img src={URL.createObjectURL(formData.image)} alt="Uploaded preview" />
+                    <div className="remove-image-icon" onClick={handleRemoveImage}>
+                      <FaTimes />
+                    </div>
+                  </>
+                ) : (
+                  <label className="upload-placeholder">
+                    <span>+</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="file-input"
+                    />
+                  </label>
+                )}
+              </div>
               <div className="item-info">
                 <h3>Item Details</h3>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Item Name</label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                    />
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Item Name</label>
+                      <input
+                        type="text"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Category</label>
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        className="category-dropdown"
+                      >
+                        <option value="">Select a Category</option>
+                        {['Electronics', 'Clothing', 'Books', 'Others'].map((category, index) => (
+                          <option key={index} value={category}>{category}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Location Found</label>
+                      <input
+                        type="text"
+                        name="locationFound"
+                        value={formData.locationFound}
+                        onChange={handleInputChange}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Category</label>
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      className="category-dropdown"
-                    >
-                      <option value="">Select a Category</option>
-                      {['Electronics', 'Clothing', 'Books', 'Others'].map((category, index) => (
-                        <option key={index} value={category}>{category}</option>
-                      ))}
-                    </select>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Date Found</label>
+                      <input
+                        type="date"
+                        name="dateFound"
+                        value={formData.dateFound}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Time Found</label>
+                      <input
+                        type="time"
+                        name="timeFound"
+                        value={formData.timeFound}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Description</label>
+                      <input
+                        type="text"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleInputChange}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Location Found</label>
-                    <input
-                      type="text"
-                      name="locationFound"
-                      value={formData.locationFound}
-                      onChange={handleInputChange}
-                    />
+                  <div className="form-actions">
+                    <button className="btn back-button" onClick={() =>navigate('/home')}>
+                      Back
+                    </button>
+                    <button className="btn submit-button" type="submit">Submit</button>
                   </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Date Found</label>
-                    <input
-                      type="date"
-                      name="dateFound"
-                      value={formData.dateFound}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Time Found</label>
-                    <input
-                      type="time"
-                      name="timeFound"
-                      value={formData.timeFound}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Description</label>
-                    <input
-                      type="text"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
+                </form>
               </div>
-            </div>
-            <div className="form-actions">
-              <button className="btn back-button" onClick={() => navigate(-1)}>
-                Back
-              </button>
-              <button className="btn submit-button">Submit</button>
             </div>
           </div>
         </div>

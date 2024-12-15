@@ -8,8 +8,8 @@ const SubHeader = () => {
       <nav className="sub-header-nav">
       <Link to="/home" className="sub-nav-link">Home</Link>
       <Link to="/report" className="sub-nav-link">Report</Link>
+      <Link to="/claimrequest" className="sub-nav-link">Claim Request</Link>
       <Link to="/history" className="sub-nav-link">History</Link>
-      <Link to="/login" className="sub-nav-link">FAQ</Link>
       </nav>
     </div>
   );

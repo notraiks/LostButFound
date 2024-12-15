@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import logo from "../../assets/img/web-logo.png";
-import UserProfile from "./UserProfile"; // Import the UserProfile component
+import UserProfile from "./UserProfile";
 import "./Header.css";
 
 const Header = () => {
@@ -13,27 +13,19 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch user data if not already in localStorage
-    const firstName = localStorage.getItem("first_name");
-    const lastName = localStorage.getItem("last_name");
-
-    if (firstName && lastName) {
-      setFullName(`${firstName} ${lastName}`);
-    } else {
-      fetch("http://localhost/LostButFound/php/routes/getUser.php", {
-        method: "GET",
-        credentials: "include",
+    fetch("http://localhost/LostButFound/php/routes/getUser.php", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setFullName(`${data.user.first_name} ${data.user.last_name}`);
+        } else {
+          console.error("Failed to fetch user data");
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            localStorage.setItem("first_name", data.user.first_name);
-            localStorage.setItem("last_name", data.user.last_name);
-            setFullName(`${data.user.first_name} ${data.user.last_name}`);
-          }
-        })
-        .catch((error) => console.error("Error fetching user data:", error));
-    }
+      .catch((error) => console.error("Error fetching user data:", error));
   }, []);
 
   const toggleDropdown = () => {
@@ -41,19 +33,15 @@ const Header = () => {
   };
 
   const logout = () => {
-    // Clear session data and redirect to login
     fetch("http://localhost/LostButFound/php/routes/logout.php", {
       method: "GET",
       credentials: "include",
     })
-      .then((response) => response.json())
       .then(() => {
         localStorage.clear();
         navigate("/");
       })
-      .catch((error) => {
-        console.error("Logout failed:", error);
-      });
+      .catch((error) => console.error("Logout failed:", error));
   };
 
   const openProfileModal = (e) => {
@@ -83,17 +71,7 @@ const Header = () => {
               <a href="/" className="dropdown-item" onClick={openProfileModal}>
                 My Profile
               </a>
-              <a href="/change-password" className="dropdown-item">
-                Change Password
-              </a>
-              <a
-                href="/"
-                className="dropdown-item logout-button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  logout();
-                }}
-              >
+              <a href="/" className="dropdown-item logout-button" onClick={(e) => { e.preventDefault(); logout(); }}>
                 Log Out
               </a>
             </div>

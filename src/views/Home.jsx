@@ -29,8 +29,10 @@ function Home() {
       })
       .then((data) => {
         if (Array.isArray(data)) {
-          setItems(data);
-          const uniqueCategories = [...new Set(data.map((item) => item.category))];
+          // Filter items with status 'Unclaimed' only
+          const unclaimedItems = data.filter((item) => item.status === 'Unclaimed');
+          setItems(unclaimedItems);
+          const uniqueCategories = [...new Set(unclaimedItems.map((item) => item.category))];
           setCategories(uniqueCategories);
         } else {
           console.error('Unexpected data format:', data);
@@ -68,7 +70,7 @@ function Home() {
         <div className="container">
           <div className="content">
             <div className="header-bar">
-              <h2>Lost and Found Items</h2>
+              <h2>Unclaimed Lost and Found Items</h2>
               <SearchAndFilter onSearch={setSearchQuery} onFilter={setSelectedCategory} categories={categories} />
             </div>
             <div className="card-grid">
@@ -87,7 +89,7 @@ function Home() {
                   />
                 ))
               ) : (
-                <p>No items found. Try adjusting your search criteria.</p>
+                <p>No unclaimed items found. Try adjusting your search criteria.</p>
               )}
             </div>
             {totalPages > 1 && (

@@ -27,6 +27,7 @@ const Login = () => {
       // console.log('Response Data:', data);
 
       if (data.success) {
+        localStorage.setItem("user_id", data.user_id);
         localStorage.setItem('first_name', data.first_name);
         localStorage.setItem('last_name', data.last_name);
         localStorage.setItem('role', data.role);
@@ -42,7 +43,7 @@ const Login = () => {
   const fields = [
     {
       label: 'Email',
-      type: 'email',
+      type: 'email',                                                         
       name: 'email',
       value: email,
       onChange: (e) => setEmail(e.target.value),

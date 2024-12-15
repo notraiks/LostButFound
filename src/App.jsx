@@ -6,6 +6,7 @@ import History from './views/History';
 import Login from './views/Login';
 import CreateAccount from './views/CreateAccount';
 import ItemDetail from './views/ItemDetail';
+import ClaimRequest from './views/ClaimRequest';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +43,7 @@ function App() {
 
         <Route path="/home" element={<Home />} />
         <Route path="/report" element={<Report />} />
+        <Route path="/claimrequest" element={<ClaimRequest />} />
         <Route path="/history" element={<History />} />
         <Route path="/item/:id" element={<ItemDetail />} />
 

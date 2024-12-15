@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../views/Login.css';
 
-const LoginForm = ({ title, subtitle, fields, buttonText, onSubmit, error, backAction, options }) => {
+const LoginForm = ({ title, subtitle, fields, buttonText, onSubmit, error, success, backAction, options }) => {
   return (
     <div className="right-content">
       <div className="login-header">
@@ -22,7 +22,9 @@ const LoginForm = ({ title, subtitle, fields, buttonText, onSubmit, error, backA
             />
           </div>
         ))}
+
         {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
 
         <div className="actions">
           {backAction && (
