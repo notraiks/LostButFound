@@ -2,44 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import SubHeader from "../components/common/SubHeader";
-import ItemEdit from "../views/ItemEdit";
 import "../App.css";
 import "./itemDetail.css";
 
-const ItemDetailPage = () => {
+const ItemDetailsV2 = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
-  const [claimStatus, setClaimStatus] = useState("");
   const [error, setError] = useState("");
-  const [userRole, setUserRole] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [success, setSuccess] = useState(""); 
-
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const response = await fetch("http://localhost/LostButFound/php/routes/getUser.php", {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await response.json();
-        if (data.success) {
-          setUserRole(data.user.role);
-        } else {
-          setUserRole("");
-        }
-      } catch (err) {
-        console.error("Error fetching user role:", err);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
-
-  useEffect(() => {
-    fetch(`http://localhost/LostButFound/php/routes/fetch.php?id=${id}`, {
+    // Fetch claimed item details
+    fetch(`http://localhost/LostButFound/php/routes/claimedItemDetail.php?id=${id}`, {
       method: "GET",
       credentials: "include",
     })
@@ -51,21 +26,21 @@ const ItemDetailPage = () => {
       })
       .then((data) => {
         if (data.error) {
-          console.error("Error fetching item data:", data.error);
+          setError(data.error);
         } else {
           setItem(data);
         }
       })
-      .catch((error) => console.error("Error fetching item data:", error));
+      .catch((error) => setError("Error fetching claimed item data: " + error.message));
   }, [id]);
 
   const handleDelete = async () => {
-    setSuccess("");
     setError("");
-    
+    setSuccess("");
+
     try {
       const response = await fetch(
-        "http://localhost/LostButFound/php/routes/deleteItem.php",
+        "http://localhost/LostButFound/php/routes/deleteClaimed.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -77,42 +52,13 @@ const ItemDetailPage = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSuccess("Item deleted. Redirecting to home...");
-        setTimeout(() => navigate("/home"), 1000); 
+        setSuccess("Claimed item deleted. Redirecting to home...");
+        setTimeout(() => navigate("/home"), 1000);
       } else {
-        setError(data.error || "Failed to delete item.");
+        setError(data.error || "Failed to delete claimed item.");
       }
     } catch (err) {
-      console.error("Error deleting item:", err);
-      setError("An error occurred while deleting the item.");
-    }
-  };
-
-  const handleClaim = async () => {
-    setClaimStatus("");
-    setError("");
-
-    try {
-      const response = await fetch(
-        "http://localhost/LostButFound/php/routes/claimItem.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ item_id: id }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setClaimStatus("Your claim request has been submitted successfully!");
-      } else {
-        setError(data.error || "Failed to submit claim request.");
-      }
-    } catch (err) {
-      console.error("Error claiming item:", err);
-      setError("An error occurred while submitting your claim request.");
+      setError("An error occurred while deleting the claimed item.");
     }
   };
 
@@ -120,12 +66,12 @@ const ItemDetailPage = () => {
     <div>
       <Header />
       <SubHeader />
-      {item && (
+      {item ? (
         <div className="main-content">
           <div className="container">
             <div className="content">
               <div className="header-bar">
-                <h2>Item Information</h2>
+                <h2>Claimed Item Details</h2>
               </div>
               <div className="item-detail">
                 <div className="item-image">
@@ -167,27 +113,27 @@ const ItemDetailPage = () => {
                       <input type="text" value={item.description} readOnly />
                     </div>
                   </div>
-                  <h3>Turnover Details</h3>
+                  <h3>Claimer Details</h3>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Turned over by</label>
+                      <label>Claimed By</label>
                       <input
                         type="text"
-                        value={`${item.first_name} ${item.last_name}`}
+                        value={`${item.claimer_first_name} ${item.claimer_last_name}`}
                         readOnly
                       />
                     </div>
                     <div className="form-group">
                       <label>Year and Course</label>
-                      <input type="text" value={item.yr_course || "N/A"} readOnly />
+                      <input type="text" value={item.claimer_yr_course || "N/A"} readOnly />
                     </div>
                     <div className="form-group">
                       <label>Email Address</label>
-                      <input type="text" value={item.email} readOnly />
+                      <input type="text" value={item.claimer_email || "N/A"} readOnly />
                     </div>
                     <div className="form-group">
                       <label>Phone Number</label>
-                      <input type="text" value={item.phone_number || "N/A"} readOnly />
+                      <input type="text" value={item.claimer_phone_number || "N/A"} readOnly />
                     </div>
                   </div>
                 </div>
@@ -196,40 +142,20 @@ const ItemDetailPage = () => {
                 <button className="btn back-button" onClick={() => navigate(-1)}>
                   Back
                 </button>
-                <button
-                  type="button"
-                  className="btn claim-button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleClaim();
-                  }}
-                >
-                  Claim
+                <button className="btn delete-button" onClick={handleDelete}>
+                  Delete
                 </button>
               </div>
-              <div className="form-actions">
-                {["admin", "staff"].includes(userRole) && (
-                  <button className="btn delete-button" onClick={handleDelete}>
-                    Delete
-                  </button>
-                )}
-                {["admin", "staff"].includes(userRole) && (
-                  <button className="btn edit-button" onClick={() => setIsEditing(true)}>
-                    Edit
-                  </button>
-                )}
-              </div>
               {success && <p className="success-message">{success}</p>}
-              {claimStatus && <p className="success-message">{claimStatus}</p>}
               {error && <p className="error-message">{error}</p>}
             </div>
           </div>
         </div>
+      ) : (
+        <p>Loading...</p>
       )}
-      {isEditing && <ItemEdit item={item} onClose={() => setIsEditing(false)} />}
     </div>
   );
 };
 
-export default ItemDetailPage;
-
+export default ItemDetailsV2;

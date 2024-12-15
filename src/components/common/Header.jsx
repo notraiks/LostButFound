@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import logo from "../../assets/img/web-logo.png";
-import UserProfile from "./UserProfile";
+import UserProfile from "../../views/UserProfile";
 import "./Header.css";
 
 const Header = () => {

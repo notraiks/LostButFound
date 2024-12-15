@@ -5,8 +5,9 @@ import Report from './views/Report';
 import History from './views/History';
 import Login from './views/Login';
 import CreateAccount from './views/CreateAccount';
-import ItemDetail from './views/ItemDetail';
+import ItemDetail from './views/itemDetail';
 import ClaimRequest from './views/ClaimRequest';
+import ItemDetailsv2 from './views/itemDetailsv2';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/claimrequest" element={<ClaimRequest />} />
         <Route path="/history" element={<History />} />
+        <Route path="/itemDetailsv2/:id" element={<ItemDetailsv2 />} />
         <Route path="/item/:id" element={<ItemDetail />} />
 
       <Route path="*" element={<Navigate to="/" />} />

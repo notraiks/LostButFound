@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "./UserProfile.css";
+import Modal from "../components/common/Modal"; 
+import "../components/common/Modal.css";
 
 const UserProfile = ({ onClose }) => {
   const [userData, setUserData] = useState({
@@ -56,7 +57,7 @@ const UserProfile = ({ onClose }) => {
       return;
     }
 
-    const userId = localStorage.getItem("user_id"); // Retrieve user_id from localStorage
+    const userId = localStorage.getItem("user_id");
 
     if (!userId) {
       setError("User ID is missing. Please log in again.");
@@ -69,7 +70,7 @@ const UserProfile = ({ onClose }) => {
       credentials: "include",
       body: JSON.stringify({
         ...userData,
-        user_id: userId, 
+        user_id: userId,
       }),
     })
       .then((response) => response.json())
@@ -86,97 +87,94 @@ const UserProfile = ({ onClose }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <h2 className="modal-title">User Profile</h2>
-        <form onSubmit={handleUpdate} className="modal-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label>First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={userData.firstName}
-                  onChange={handleInputChange}
-                  required
-                />
-            </div>
-            <div className="form-group">
-            <label>Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={userData.lastName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className = "form-row">
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={userData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Phone Number</label>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={userData.phoneNumber}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-
+    <Modal title="User Profile" onClose={onClose}>
+      <form onSubmit={handleUpdate} className="modal-form">
+        <div className="form-row">
           <div className="form-group">
-            <label>Year and Course</label>
+            <label>First Name</label>
             <input
               type="text"
-              name="yrCourse"
-              value={userData.yrCourse}
+              name="firstName"
+              value={userData.firstName}
               onChange={handleInputChange}
               required
             />
           </div>
-
           <div className="form-group">
-            <label>New Password</label>
+            <label>Last Name</label>
             <input
-              type="password"
-              name="newPassword"
-              value={userData.newPassword}
+              type="text"
+              name="lastName"
+              value={userData.lastName}
               onChange={handleInputChange}
+              required
             />
           </div>
+        </div>
 
+        <div className="form-row">
           <div className="form-group">
-            <label>Confirm Password</label>
+            <label>Email</label>
             <input
-              type="password"
-              name="confirmPassword"
-              value={userData.confirmPassword}
+              type="email"
+              name="email"
+              value={userData.email}
               onChange={handleInputChange}
+              required
             />
           </div>
-
-          {error && <p className="error-message">{error}</p>}
-          {success && <p className="success-message">{success}</p>}
-
-          <div className="form-actions">
-            <button type="submit" className="update-button">Update</button>
-            <button type="button" className="close-button" onClick={onClose}>Close</button>
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={userData.phoneNumber}
+              onChange={handleInputChange}
+              required
+            />
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        <div className="form-group">
+          <label>Year and Course</label>
+          <input
+            type="text"
+            name="yrCourse"
+            value={userData.yrCourse}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>New Password</label>
+          <input
+            type="password"
+            name="newPassword"
+            value={userData.newPassword}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={userData.confirmPassword}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
+
+        <div className="form-actions">
+          <button type="submit" className="update-button">Update</button>
+          <button type="button" className="close-button" onClick={onClose}>Close</button>
+        </div>
+      </form>
+    </Modal>
   );
 };
 

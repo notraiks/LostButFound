@@ -70,7 +70,7 @@ function Home() {
         <div className="container">
           <div className="content">
             <div className="header-bar">
-              <h2>Unclaimed Lost and Found Items</h2>
+              <h2>Lost and Found Items</h2>
               <SearchAndFilter onSearch={setSearchQuery} onFilter={setSelectedCategory} categories={categories} />
             </div>
             <div className="card-grid">

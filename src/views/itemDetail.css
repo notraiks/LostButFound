@@ -111,3 +111,21 @@
 .claim-button:hover {
     background-color: #218838;
 }
+
+.edit-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.delete-button:hover {
+  background-color: #b02a37;
+}

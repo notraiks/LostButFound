@@ -3,7 +3,7 @@ import Header from "../components/common/Header";
 import SubHeader from "../components/common/SubHeader";
 import SearchAndFilter from "../components/common/SearchAndFilter";
 import Pagination from "../components/common/Pagination";
-import ClaimerDetails from "../components/common/ClaimerDetails";
+import ClaimerDetails from "./ClaimerDetails";
 import "./Home.css";
 
 function ClaimRequest() {

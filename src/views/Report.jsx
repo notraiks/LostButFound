@@ -118,7 +118,21 @@ function Report() {
                         className="category-dropdown"
                       >
                         <option value="">Select a Category</option>
-                        {['Electronics', 'Clothing', 'Books', 'Others'].map((category, index) => (
+                        {[
+                            "Accessories",
+                            "Bags & Backpacks",
+                            "Clothing",
+                            "Electronics",
+                            "Eyewear",
+                            "Footwear",
+                            "IDs & Cards",
+                            "Keys",
+                            "Mobile Devices",
+                            "Papers & Documents",
+                            "Tumblers",
+                            "Wallets & Purses",
+                            "Others",
+                          ].map((category, index) => (
                           <option key={index} value={category}>{category}</option>
                         ))}
                       </select>

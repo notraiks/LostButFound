@@ -13,37 +13,62 @@ function History() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [userRole, setUserRole] = useState('');
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost/LostButFound/php/routes/fetch.php', {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    // Fetch user role first
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch('http://localhost/LostButFound/php/routes/getUser.php', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setUserRole(data.user.role);
+        } else {
+          console.error('Failed to retrieve user role.');
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          // Filter items with status 'Claimed' only
-          const claimedItems = data.filter((item) => item.status === 'Claimed');
-          setItems(claimedItems);
-          const uniqueCategories = [...new Set(claimedItems.map((item) => item.category))];
+      } catch (err) {
+        console.error('Error fetching user role:', err);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
+
+  useEffect(() => {
+    // Fetch claimed items based on user role
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost/LostButFound/php/routes/fetchClaimedItems.php',
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+
+        const data = await response.json();
+        if (response.ok) {
+          setItems(data);
+          const uniqueCategories = [...new Set(data.map((item) => item.category))];
           setCategories(uniqueCategories);
         } else {
-          console.error('Unexpected data format:', data);
+          console.error('Failed to fetch claimed items:', data.error);
           setItems([]);
           setCategories([]);
         }
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+      } catch (error) {
+        console.error('Error fetching claimed items:', error);
+      }
+    };
+
+    fetchItems();
+  }, [userRole]);
 
   const filteredItems = items.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -52,11 +77,15 @@ function History() {
   });
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-  const currentItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentItems = filteredItems.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleCardClick = (itemId) => {
-    navigate(`/item/${itemId}`);
+    navigate(`/itemDetailsv2/${itemId}`);
   };
+  
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -71,7 +100,11 @@ function History() {
           <div className="content">
             <div className="header-bar">
               <h2>Claimed Items History</h2>
-              <SearchAndFilter onSearch={setSearchQuery} onFilter={setSelectedCategory} categories={categories} />
+              <SearchAndFilter
+                onSearch={setSearchQuery}
+                onFilter={setSelectedCategory}
+                categories={categories}
+              />
             </div>
             <div className="card-grid">
               {currentItems.length > 0 ? (
@@ -93,7 +126,12 @@ function History() {
               )}
             </div>
             {totalPages > 1 && (
-              <Pagination currentPage={currentPage} totalPages={totalPages} totalItems={filteredItems.length} onPageChange={handlePageChange} />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredItems.length}
+                onPageChange={handlePageChange}
+              />
             )}
           </div>
         </div>

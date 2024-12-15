@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-$stmt = $conn->prepare("SELECT first_name, last_name, email, phone_number, yr_course FROM users WHERE user_id = ?");
+$stmt = $conn->prepare("SELECT first_name, last_name, email, phone_number, yr_course, role FROM users WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -25,9 +25,11 @@ if ($result->num_rows === 1) {
             "last_name" => $user['last_name'],
             "email" => $user['email'],
             "phone_number" => $user['phone_number'],
-            "yr_course" => $user['yr_course']
+            "yr_course" => $user['yr_course'],
+            "role" => $user['role']
         ]
     ]);
+    
 } else {
     http_response_code(404);
     echo json_encode(["error" => "User not found."]);
